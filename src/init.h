@@ -5,8 +5,6 @@
 #define MASTER_FILE_NAME "master-hash.bin"
 #define PASSWORD_STORE_DIR ".password-store"
 
-// using namespace std;
-
 namespace fs = std::filesystem;
 
 bool validateNewPass(const char* pass, const char* confirm);

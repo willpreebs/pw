@@ -7,10 +7,11 @@
 
 #include "encrypt.h"
 #include "init.h"
+#include "fileIO.h"
 
-using namespace std;
+using std::string, std::cout, std::endl, std::cin;
 
-namespace fs = filesystem;
+namespace fs = std::filesystem;
 
 bool validateNewPass(const char* pass, const char* confirm) {
     // if (strlen(pass) < 7) {
@@ -74,7 +75,7 @@ int setupUsername(char *argv[], fs::path passStorePath) {
 
     string sPass (pass);
 
-    hashAndStorePassword(sPass, path);
+    fileIO::writeToNewBinaryFile(path, encrypt::hashMasterPassword(sPass));
 
     return 0;
 }

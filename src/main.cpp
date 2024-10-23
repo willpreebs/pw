@@ -66,56 +66,14 @@ int listUsers() {
 
 }
 
-int login(int argc, char *argv[]) {
-// prompt user for master password
-
-    // handle login flags
-    // -u --username: specify username on login
-    // -p --password: specify password on login
-
-    string username {};
-    char* password = nullptr;
-    
-    for (int i = 1; i < argc; i++) {
-        char* arg = argv[i];
-        if (strcmp(arg, "-u") == 0 || strcmp(arg, "--username") == 0) {
-            if (i + 1 >= argc) {
-                cout << "Must specify username after flag " << arg << endl;
-            }
-            // set next argument to the username
-            username = string(argv[i+1]);
-        }
-        else if (strcmp(arg, "-p") == 0 || strcmp(arg, "--password") == 0) {
-            if (i + 1 >= argc) {
-                cout << "Must specify password after flag " << arg << endl;
-            }
-            password = argv[i+1];
-            
-        }
+int tryLogin(int argc, char *argv[]) {
+    try {
+        UserContext c {login(argc, argv)};
+        handleCommands::prompt(c);
+    } 
+    catch (const char* message) {
+        std::cout << message << std::endl;
     }
-
-    if (username.empty()) {
-        username = promptUsername();
-    }
-
-    if (password == nullptr) {
-        password = promptPassword();
-    }
-
-    if(confirmPassword(getPasswordStorePath(), username, password)) {
-        prompt(username, password);
-    }
-    
-    // if ()
-
-
-    // if(promptLogin(argv, getPasswordStorePath(), username)) {
-    //     // user successfully logged in
-    //     // start prompt loop for returning saved passwords
-    //     // cout << username;
-
-    //     prompt(username);
-    // }
     return 0;
 }
 
@@ -124,13 +82,9 @@ int main(int argc, char *argv[]) {
     cout << "Welcome to the password manager\n";
 
     if (argc == 1) {
-
-        return login(argc, argv);
-        
+        return tryLogin(argc, argv);
     }
     char const* arg = argv[1];
-
-    cout << arg << "\n";
 
     if (strcmp(arg, "init") == 0) {
         
@@ -138,29 +92,25 @@ int main(int argc, char *argv[]) {
         const fs::path storePath = getPasswordStorePath();
         initPasswordStore(argv, storePath);
         setupUsername(argv, storePath);
+        return 0;
     }
 
     else if(strcmp(arg, "login") == 0) {
-        return login(argc, argv);
+        return tryLogin(argc, argv);
     }
 
     else if (strcmp(arg, "userlist") == 0) {
         return listUsers();
     }
-    else if (strcmp(arg, "add") == 0) {
-
-    }
     else if (strcmp(arg, "help") == 0) {
 
     }
     else if (arg[0] == '-') {
-        return login(argc, argv);
+        return tryLogin(argc, argv);
     }
     else {
         cout << "Help message WIP\n";
     }
-
-    return 0;
 }
 
 

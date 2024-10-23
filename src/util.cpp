@@ -40,9 +40,6 @@ fs::path getPasswordStorePath() {
  * return directory of username
  */
 fs::path getUsernameDir(string username) {
-    fs::path p = getPasswordStorePath();
-    p /= username;
-
-    return p;
+    return getPasswordStorePath() / username;
 }
 
